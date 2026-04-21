@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, qa]
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+        env:
+          DATABASE_URL: postgres://dummy:dummy@localhost/dummy
+          NEXTAUTH_SECRET: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          NEXTAUTH_URL: http://localhost:3000
+          RESEND_API_KEY: dummy
+          TURNSTILE_SECRET_KEY: dummy
+          BLOB_READ_WRITE_TOKEN: dummy
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: dummy
+          NEXT_PUBLIC_ENV: dev
