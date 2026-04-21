@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Eye, MapPin } from "lucide-react";
 import {
@@ -9,6 +10,7 @@ import {
   statusStyles,
   type MockReport,
 } from "@/lib/mock-data";
+import { photoForCategory } from "@/lib/photos";
 import { cn } from "@/lib/utils";
 
 export function ReportCard({
@@ -19,33 +21,32 @@ export function ReportCard({
   index?: number;
 }) {
   const cat = categories.find((c) => c.id === report.category);
-  const Icon = cat?.icon;
+  const photo = photoForCategory(report.category, index);
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.25) }}
-      className="group rounded-2xl bg-white ring-1 ring-neutral-200 overflow-hidden shadow-soft hover:shadow-pop hover:ring-primary-300 transition-all"
+      transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.3) }}
+      whileHover={{ y: -4 }}
+      className="group rounded-2xl bg-white ring-1 ring-neutral-200 overflow-hidden shadow-soft hover:shadow-pop hover:ring-primary-300 transition-shadow will-change-transform"
     >
       <Link href={`/reportes/${report.id}`} className="block">
-        <div
-          className={cn(
-            "aspect-[16/10] bg-gradient-to-br relative overflow-hidden",
-            report.imageBg
-          )}
-          role="img"
-          aria-label={`Foto representativa: ${cat?.label ?? "reporte"}`}
-        >
-          {Icon && (
-            <Icon
-              className="absolute bottom-3 right-3 h-10 w-10 text-white/80 drop-shadow"
-              aria-hidden
-            />
-          )}
+        <div className={cn("aspect-[16/10] relative overflow-hidden bg-gradient-to-br", report.imageBg)}>
+          <Image
+            src={photo}
+            alt={`${cat?.label ?? "Reporte"} en ${report.street}, ${report.depto}`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+          />
           <span
             className={cn(
-              "absolute top-3 left-3 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
+              "absolute top-3 left-3 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm",
               statusStyles[report.status]
             )}
           >

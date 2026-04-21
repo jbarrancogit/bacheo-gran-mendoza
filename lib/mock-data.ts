@@ -113,6 +113,7 @@ export type MockReport = {
   daysAgo: number;
   alsoSaw: number;
   imageBg: string;
+  photoUrl?: string;
   timeline: { at: string; label: string; detail?: string }[];
 };
 

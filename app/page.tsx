@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { Stats } from "@/components/sections/stats";
+import { ScrollShowcase } from "@/components/sections/scroll-showcase";
 import { Steps } from "@/components/sections/steps";
 import { CategoriesGrid } from "@/components/sections/categories-grid";
 import { Testimonials } from "@/components/sections/testimonials";
@@ -10,6 +11,7 @@ export default function HomePage() {
     <>
       <Hero />
       <Stats />
+      <ScrollShowcase />
       <Steps />
       <CategoriesGrid />
       <Testimonials />

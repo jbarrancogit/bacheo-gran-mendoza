@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -14,6 +15,7 @@ import {
   statusLabels,
   statusStyles,
 } from "@/lib/mock-data";
+import { photoForCategory } from "@/lib/photos";
 import { cn } from "@/lib/utils";
 import { AlsoSawButton } from "@/components/also-saw-button";
 
@@ -41,6 +43,7 @@ export default async function ReporteDetailPage({ params }: { params: Params }) 
 
   const cat = categories.find((c) => c.id === report.category);
   const Icon = cat?.icon;
+  const photo = photoForCategory(report.category, reports.indexOf(report));
 
   return (
     <article className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
@@ -91,17 +94,22 @@ export default async function ReporteDetailPage({ params }: { params: Params }) 
         </div>
       </header>
 
-      <div
-        className={cn(
-          "mt-6 aspect-[16/9] sm:aspect-[21/9] rounded-3xl bg-gradient-to-br relative overflow-hidden ring-1 ring-neutral-200",
-          report.imageBg
-        )}
-        role="img"
-        aria-label={`Foto representativa: ${cat?.label ?? "reporte"}`}
-      >
+      <div className="mt-6 aspect-[16/9] sm:aspect-[21/9] rounded-3xl relative overflow-hidden ring-1 ring-neutral-200 bg-neutral-100">
+        <Image
+          src={photo}
+          alt={`Foto del reporte en ${report.street}, ${report.depto}`}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 1024px"
+          className="object-cover"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
+        />
         {Icon && (
           <Icon
-            className="absolute bottom-6 right-6 h-20 w-20 text-white/80 drop-shadow-lg"
+            className="absolute bottom-6 right-6 h-20 w-20 text-white/90 drop-shadow-lg"
             aria-hidden
           />
         )}
