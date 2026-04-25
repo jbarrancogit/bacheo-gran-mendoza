@@ -9,25 +9,22 @@ import {
   Calendar,
   Layers,
 } from "lucide-react";
-import {
-  categories,
-  reports,
-  statusLabels,
-  statusStyles,
-} from "@/lib/mock-data";
+import { categories, statusLabels, statusStyles } from "@/lib/mock-data";
 import { photoForCategory } from "@/lib/photos";
 import { cn } from "@/lib/utils";
 import { AlsoSawButton } from "@/components/also-saw-button";
+import { getReport, listReports } from "@/lib/data/reports";
 
 type Params = Promise<{ id: string }>;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const reports = await listReports();
   return reports.map((r) => ({ id: r.id }));
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { id } = await params;
-  const report = reports.find((r) => r.id === id);
+  const report = await getReport(id);
   if (!report) return { title: "Reporte no encontrado" };
   const cat = categories.find((c) => c.id === report.category);
   return {
@@ -38,12 +35,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ReporteDetailPage({ params }: { params: Params }) {
   const { id } = await params;
-  const report = reports.find((r) => r.id === id);
+  const report = await getReport(id);
   if (!report) notFound();
 
   const cat = categories.find((c) => c.id === report.category);
   const Icon = cat?.icon;
-  const photo = photoForCategory(report.category, reports.indexOf(report));
+  const photo = photoForCategory(report.category, report.daysAgo);
 
   return (
     <article className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">

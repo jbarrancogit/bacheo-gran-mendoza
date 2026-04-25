@@ -2,14 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { categories, deptos, reports, statusLabels } from "@/lib/mock-data";
-import type { CategoryId, Depto, ReportStatus } from "@/lib/mock-data";
+import { categories, deptos, statusLabels } from "@/lib/mock-data";
+import type {
+  CategoryId,
+  Depto,
+  MockReport,
+  ReportStatus,
+} from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { ReportCard } from "./report-card";
 
 const statuses: ReportStatus[] = ["enviado", "recibido", "en-obra", "resuelto"];
 
-export function ReportsExplorer() {
+export function ReportsExplorer({ reports }: { reports: MockReport[] }) {
   const [cat, setCat] = useState<CategoryId | "all">("all");
   const [depto, setDepto] = useState<Depto | "all">("all");
   const [status, setStatus] = useState<ReportStatus | "all">("all");
@@ -21,7 +26,7 @@ export function ReportsExplorer() {
       if (status !== "all" && r.status !== status) return false;
       return true;
     });
-  }, [cat, depto, status]);
+  }, [cat, depto, status, reports]);
 
   return (
     <div>

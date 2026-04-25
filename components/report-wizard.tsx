@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { createReport } from "@/app/reportar/_actions";
 
 type StepKey = "foto" | "ubicacion" | "categoria" | "confirmar" | "enviado";
 
@@ -38,14 +39,10 @@ type State = {
   description: string;
   generatedId: string | null;
   submitting: boolean;
+  error: string | null;
 };
 
 const mockCoords = { lat: -32.8908, lng: -68.8272 };
-
-function generateReportId(): string {
-  const n = Math.floor(10000 + Math.random() * 90000);
-  return `MZA-${n}`;
-}
 
 export function ReportWizard() {
   const [state, setState] = useState<State>({
@@ -57,6 +54,7 @@ export function ReportWizard() {
     description: "",
     generatedId: null,
     submitting: false,
+    error: null,
   });
 
   const fileRef = useRef<HTMLInputElement>(null);
@@ -102,17 +100,33 @@ export function ReportWizard() {
     if (idx > 0) setState((s) => ({ ...s, step: stepOrder[idx - 1] }));
   }
 
-  function submit() {
-    setState((s) => ({ ...s, submitting: true }));
-    setTimeout(() => {
-      const id = generateReportId();
+  async function submit() {
+    if (!state.category || !state.coords) return;
+    setState((s) => ({ ...s, submitting: true, error: null }));
+    try {
+      const result = await createReport({
+        category: state.category,
+        description: state.description,
+        lat: state.coords.lat,
+        lng: state.coords.lng,
+      });
+      if (!result.ok) {
+        setState((s) => ({ ...s, submitting: false, error: result.error }));
+        return;
+      }
       setState((s) => ({
         ...s,
         submitting: false,
         step: "enviado",
-        generatedId: id,
+        generatedId: result.code,
       }));
-    }, 1100);
+    } catch (err) {
+      setState((s) => ({
+        ...s,
+        submitting: false,
+        error: err instanceof Error ? err.message : "Error desconocido",
+      }));
+    }
   }
 
   function reset() {
@@ -125,6 +139,7 @@ export function ReportWizard() {
       description: "",
       generatedId: null,
       submitting: false,
+      error: null,
     });
   }
 
@@ -449,6 +464,15 @@ export function ReportWizard() {
           )}
         </AnimatePresence>
       </div>
+
+      {state.error && (
+        <div
+          role="alert"
+          className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {state.error}
+        </div>
+      )}
 
       {/* Nav */}
       <div className="mt-6 flex items-center justify-between gap-3">

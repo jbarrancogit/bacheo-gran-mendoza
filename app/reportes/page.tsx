@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { ReportsExplorer } from "@/components/reports-explorer";
+import { listReports } from "@/lib/data/reports";
 
 export const metadata: Metadata = {
   title: "Reportes",
   description: "Reportes públicos de baches y problemas viales del Gran Mendoza.",
 };
 
-export default function ReportesPage() {
+export default async function ReportesPage() {
+  const reports = await listReports();
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-16">
       <header className="mb-8">
@@ -18,7 +20,7 @@ export default function ReportesPage() {
           departamento o estado.
         </p>
       </header>
-      <ReportsExplorer />
+      <ReportsExplorer reports={reports} />
     </div>
   );
 }
