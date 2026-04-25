@@ -1,25 +1,21 @@
-const env = process.env.NEXT_PUBLIC_ENV ?? "local";
-const isProd = env === "prod";
+import { Hero } from "@/components/sections/hero";
+import { Stats } from "@/components/sections/stats";
+import { ScrollShowcase } from "@/components/sections/scroll-showcase";
+import { Steps } from "@/components/sections/steps";
+import { CategoriesGrid } from "@/components/sections/categories-grid";
+import { Testimonials } from "@/components/sections/testimonials";
+import { CtaBand } from "@/components/sections/cta-band";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main style={{ padding: "2rem", fontFamily: "system-ui" }}>
-      {!isProd && (
-        <div
-          style={{
-            background: "#fbbf24",
-            color: "#000",
-            padding: "0.5rem 1rem",
-            marginBottom: "1rem",
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          Entorno: {env.toUpperCase()}
-        </div>
-      )}
-      <h1>Bacheo Gran Mendoza</h1>
-      <p>Scaffold inicial. Pronto vas a poder reportar un bache.</p>
-    </main>
+    <>
+      <Hero />
+      <Stats />
+      <ScrollShowcase />
+      <Steps />
+      <CategoriesGrid />
+      <Testimonials />
+      <CtaBand />
+    </>
   );
 }
