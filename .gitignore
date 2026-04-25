@@ -44,3 +44,5 @@ SESSION-STATE.md
 # Python cache (uipro usa scripts Python)
 __pycache__/
 *.pyc
+
+.vercel
